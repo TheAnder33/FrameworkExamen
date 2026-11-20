@@ -1,0 +1,251 @@
+@baseUrl = http://localhost:3000/api
+
+### 1. Listar todos los eventos (paginación por defecto)
+GET {{baseUrl}}/eventos
+
+### 2. Filtrar por tipo
+GET {{baseUrl}}/eventos?tipo=concierto
+
+### 3. Filtrar por rango de precio (precioMin y precioMax)
+GET {{baseUrl}}/eventos?precioMin=5&precioMax=15
+
+### 4. Filtrar solo gratuitos (gratis=true)
+GET {{baseUrl}}/eventos?gratis=true
+
+### 5. Filtrar solo de pago (gratis=false)
+GET {{baseUrl}}/eventos?gratis=false
+
+### 6. Filtrar por texto en título o descripción
+GET {{baseUrl}}/eventos?texto=rock
+
+### 7. Filtrar por etiqueta
+GET {{baseUrl}}/eventos?etiqueta=terraza
+
+### 8. Filtrar por rango de fechas (desde y hasta)
+GET {{baseUrl}}/eventos?desde=2026-11-01&hasta=2026-11-30
+
+### 9. Filtrar por organizador
+GET {{baseUrl}}/eventos?organizador=algara
+
+### 10. Filtrar por artista
+GET {{baseUrl}}/eventos?artista=biguri
+
+### 11. Filtrar por cancelado=false
+GET {{baseUrl}}/eventos?cancelado=false
+
+### 12. Filtrar por alquiler pendiente de cobro
+GET {{baseUrl}}/eventos?alquilerPendiente=true
+
+### 13. Filtrar por mínimo de camareros necesarios
+GET {{baseUrl}}/eventos?minCamareros=4
+
+### 14. Ordenar por balance descendente
+GET {{baseUrl}}/eventos?orden=balancePrevisto&dir=desc
+
+### 15. Proyección de campos (campos=titulo,fecha)
+GET {{baseUrl}}/eventos?campos=titulo,fecha
+
+### 16. Paginación personalizada (pagina=2&limite=3)
+GET {{baseUrl}}/eventos?pagina=2&limite=3
+
+### 17. Combinación 1: Conciertos no cancelados ordenados por fecha
+GET {{baseUrl}}/eventos?tipo=concierto&cancelado=false&orden=fecha&dir=asc
+
+### 18. Combinación 2: Eventos de noviembre con alquiler pendiente y proyección
+GET {{baseUrl}}/eventos?desde=2026-11-01&hasta=2026-11-30&alquilerPendiente=true&campos=titulo,organizador,alquiler
+
+
+### 19. Resumen general
+GET {{baseUrl}}/eventos/resumen
+
+### 20. Deudas de alquiler por organizador
+GET {{baseUrl}}/eventos/deudas
+
+### 21. Ranking de actuaciones por caché
+GET {{baseUrl}}/eventos/actuaciones
+
+### 22. Calendario de noviembre 2026
+GET {{baseUrl}}/eventos/calendario?mes=2026-11
+
+### 23. Preguntas rápidas de sí o no
+GET {{baseUrl}}/eventos/preguntas
+
+
+### 24. Obtener detalle de un evento por ID
+GET {{baseUrl}}/eventos/1
+
+### 25. Crear un nuevo evento (201)
+POST {{baseUrl}}/eventos
+Content-Type: application/json
+
+{
+  "titulo": "Noche de Jazz",
+  "descripcion": "Cuarteto de jazz en directo con copa de bienvenida.",
+  "tipo": "concierto",
+  "fecha": "2026-12-05",
+  "hora": "21:30",
+  "entrada": { "gratis": false, "precio": 15 },
+  "gentePrevista": 95,
+  "organizador": { "nombre": "Jazz Bilbao", "contacto": "699888777" },
+  "alquiler": { "cobra": true, "importe": 180, "pagado": false },
+  "cancelacion": null,
+  "artistas": [
+    { "nombre": "Eneko Quartet", "cobra": 400, "minutos": 80 }
+  ],
+  "etiquetas": ["jazz", "musica"],
+  "celebrado": false
+}
+
+### 26. Reemplazar un evento completo con PUT (200)
+PUT {{baseUrl}}/eventos/2
+Content-Type: application/json
+
+{
+  "titulo": "Concierto Rock Local (Edición Especial)",
+  "descripcion": "Grupo en directo presentando su nuevo disco de rock.",
+  "tipo": "concierto",
+  "fecha": "2026-11-12",
+  "hora": "22:00",
+  "entrada": { "gratis": false, "precio": 14 },
+  "gentePrevista": 145,
+  "organizador": { "nombre": "Musika Kluba", "contacto": "611222333" },
+  "alquiler": { "cobra": true, "importe": 200, "pagado": true },
+  "cancelacion": null,
+  "artistas": [
+    { "nombre": "The Wilsons", "cobra": 550, "minutos": 95 }
+  ],
+  "etiquetas": ["musica", "rock"],
+  "celebrado": false
+}
+
+### 27. Actualizar parcialmente con PATCH (fusión de objeto anidado)
+PATCH {{baseUrl}}/eventos/5
+Content-Type: application/json
+
+{
+  "gentePrevista": 75,
+  "entrada": { "precio": 6 }
+}
+
+### 28. Acción: Pagar alquiler de un evento (200)
+PATCH {{baseUrl}}/eventos/5/pagar-alquiler
+
+### 29. Acción: Cancelar un evento con motivo (200)
+PATCH {{baseUrl}}/eventos/6/cancelar
+Content-Type: application/json
+
+{
+  "motivo": "Cancelación solicitada por la empresa organizadora."
+}
+
+### 30. Eliminar un evento (204)
+DELETE {{baseUrl}}/eventos/11
+
+
+### 31. Listar todos los productos
+GET {{baseUrl}}/productos
+
+### 32. Filtrar productos por categoría y bajo mínimo
+GET {{baseUrl}}/productos?categoria=bebida&bajoMinimo=true
+
+### 33. Consultar valor económico del almacén
+GET {{baseUrl}}/productos/valor
+
+### 34. Consultar necesidades de un evento concreto
+GET {{baseUrl}}/eventos/2/necesidades
+
+### 35. Consultar previsión de compras para eventos pendientes
+GET {{baseUrl}}/productos/prevision
+
+### 36. Crear un producto nuevo (201)
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Agua mineral 50cl",
+  "categoria": "bebida",
+  "unidad": "botellas",
+  "stockActual": 60,
+  "minimo": 30,
+  "caja": { "unidadesPorCaja": 24, "precioCaja": 9.60 },
+  "proveedor": { "nombre": "Bebidas del Norte S.A.", "telefono": "943123456" },
+  "consumoPorTipo": {
+    "monologo": 0.5,
+    "concierto": 1,
+    "fiesta": 1,
+    "karaoke": 1,
+    "quiz": 0.5,
+    "privado": 1
+  }
+}
+
+
+### 37. Listar pedidos (del más reciente al más antiguo)
+GET {{baseUrl}}/pedidos
+
+### 38. Listar solo pedidos pendientes
+GET {{baseUrl}}/pedidos?pendiente=true
+
+### 39. Ver detalle de un pedido con nombres de producto
+GET {{baseUrl}}/pedidos/2
+
+### 40. Crear pedido manual (201)
+POST {{baseUrl}}/pedidos
+Content-Type: application/json
+
+{
+  "lineas": [
+    { "productoId": 1, "cajas": 3 },
+    { "productoId": 2, "cajas": 2 }
+  ]
+}
+
+### 41. Generar pedido automático según previsión (201)
+POST {{baseUrl}}/pedidos/automatico
+
+### 42. Recibir un pedido y sumar stock al almacén (200)
+PATCH {{baseUrl}}/pedidos/2/recibir
+
+
+### 43. Error 400: ID no numérico en URL
+GET {{baseUrl}}/eventos/abc
+
+### 44. Error 400: Validación fallida al crear evento (entrada gratis con precio > 0 y artista inválido)
+POST {{baseUrl}}/eventos
+Content-Type: application/json
+
+{
+  "titulo": "",
+  "descripcion": "Prueba fallo",
+  "tipo": "inventado",
+  "fecha": "2026/11/01",
+  "hora": "20:00",
+  "entrada": { "gratis": true, "precio": 10 },
+  "gentePrevista": 200,
+  "organizador": { "nombre": "Test", "contacto": "123" },
+  "alquiler": { "cobra": false, "importe": 50, "pagado": true },
+  "artistas": [{ "nombre": "", "cobra": -10, "minutos": 0 }]
+}
+
+### 45. Error 404: Recurso inexistente
+GET {{baseUrl}}/eventos/9999
+
+### 46. Error 404: Ruta desconocida
+GET {{baseUrl}}/ruta-que-no-existe
+
+### 47. Error 409: Intentar cancelar un evento ya cancelado
+PATCH {{baseUrl}}/eventos/4/cancelar
+Content-Type: application/json
+
+{
+  "motivo": "Intento duplicado"
+}
+
+### 48. Error 409: Intentar celebrar un evento sin stock suficiente
+PATCH {{baseUrl}}/eventos/3/celebrar
+
+### 49. Error 409: Intentar recibir un pedido que ya estaba recibido
+PATCH {{baseUrl}}/pedidos/1/recibir
+
+### 50. Error 409: Intentar borrar un producto que está en un pedido pendiente
+DELETE {{baseUrl}}/productos/1
